@@ -44,4 +44,4 @@ jobs:
       - name: Push to DockerHub
         run: |
           docker tag myapp waiaung22123/myapp
-          docker push waiaung22123 /myapp
+          docker push waiaung22123/myapp
