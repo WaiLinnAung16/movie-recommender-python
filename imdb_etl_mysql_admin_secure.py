@@ -297,10 +297,10 @@ def main():
             logging.error(f"ETL failed: {e}")
 
     app.run(
-        host="0.0.0.0",
+        host=os.getenv("HOST", "127.0.0.1"),
         port=int(os.getenv("PORT", "5000")),
         debug=False,
-    )  # 0.0.0.0 so published container ports and host-network scanners can reach the app
+    )
 
 if __name__ == "__main__":
     main()
