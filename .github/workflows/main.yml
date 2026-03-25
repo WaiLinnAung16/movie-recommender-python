@@ -102,6 +102,7 @@ jobs:
       - name: DAST Scan
         run: |
           docker run --network="host" \
+            --user "$(id -u):$(id -g)" \
             -v "${{ github.workspace }}:/zap/wrk:rw" \
             ghcr.io/zaproxy/zaproxy:stable \
             zap-baseline.py -t http://localhost:5000 -r zap-report.html
