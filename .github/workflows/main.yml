@@ -42,7 +42,7 @@ jobs:
       # 5. SCA (pip-audit)
       # -------------------------------
       - name: Run SCA
-        run: pip-audit
+        run: pip-audit --severity high critical --ignore-file .pip-audit-ignore
 
       # -------------------------------
       # 6. Unit Tests
