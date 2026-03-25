@@ -2,7 +2,7 @@ name: Flask CI/CD DevSecOps
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build-test-deploy:
@@ -21,7 +21,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       # -------------------------------
       # 3. Install Dependencies
@@ -42,13 +42,7 @@ jobs:
       # 5. SCA (pip-audit)
       # -------------------------------
       - name: Run SCA
-        run: |
-            pip-audit --severity high critical
-            if [ $? -ne 0 ]; then
-              echo "Vulnerabilities found!"
-              exit 1
-            fi
-
+        run: pip-audit
 
       # -------------------------------
       # 6. Unit Tests
@@ -77,10 +71,10 @@ jobs:
       - name: Scan Docker Image (Trivy)
         uses: aquasecurity/trivy-action@v0.35.0
         with:
-          image-ref: 'waiaung22123/myapp2'
-          format: 'table'
-          exit-code: '1'
-          severity: 'CRITICAL,HIGH'
+          image-ref: "waiaung22123/myapp2"
+          format: "table"
+          exit-code: "1"
+          severity: "CRITICAL,HIGH"
 
       # -------------------------------
       # 10. Push to DockerHub
