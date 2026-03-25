@@ -44,7 +44,7 @@ jobs:
       - name: Run SCA
         run: |
           pip install --upgrade pip-audit
-          pip-audit --severity high critical --ignore-vuln CVE-2026-4539
+          pip-audit --ignore-vuln CVE-2026-4539
 
       # -------------------------------
       # 6. Unit Tests
