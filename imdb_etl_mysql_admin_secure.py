@@ -296,7 +296,11 @@ def main():
         except Exception as e:
             logging.error(f"ETL failed: {e}")
 
-    app.run(debug=False)  # Production-safe
+    app.run(
+        host="0.0.0.0",
+        port=int(os.getenv("PORT", "5000")),
+        debug=False,
+    )  # 0.0.0.0 so published container ports and host-network scanners can reach the app
 
 if __name__ == "__main__":
     main()
