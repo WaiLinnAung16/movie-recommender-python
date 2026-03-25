@@ -8,6 +8,20 @@ jobs:
   build-test-deploy:
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: ci_mysql_root
+          MYSQL_DATABASE: imdb_db
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -pci_mysql_root"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
       # -------------------------------
       # 1. Checkout Code
@@ -88,16 +102,14 @@ jobs:
       # 11. Run Container (for DAST)
       # -------------------------------
       - name: Run Container
-        run: docker run -d -p 5000:5000 --name myapp2 waiaung22123/myapp2
+        run: |
+          docker run -d -p 5000:5000 --name myapp2 \
+            --add-host=host.docker.internal:host-gateway \
+            -e DB_URI=mysql+pymysql://root:ci_mysql_root@host.docker.internal:3306/imdb_db \
+            waiaung22123/myapp2
 
       # -------------------------------
-      # 12. Wait for App to Start
-      # -------------------------------
-      - name: Wait for app
-        run: sleep 10
-
-      # -------------------------------
-      # 13. DAST (OWASP ZAP)
+      # 12. DAST (OWASP ZAP)
       # -------------------------------
       - name: DAST Scan
         run: |
@@ -108,7 +120,7 @@ jobs:
             zap-baseline.py -t http://127.0.0.1:5000 -r zap-report.html
 
       # -------------------------------
-      # 14. Upload ZAP Report
+      # 13. Upload ZAP Report
       # -------------------------------
       - name: Upload ZAP Report
         uses: actions/upload-artifact@v4
@@ -117,9 +129,10 @@ jobs:
           path: zap-report.html
 
       # -------------------------------
-      # 15. Cleanup
+      # 14. Cleanup
       # -------------------------------
       - name: Cleanup
+        if: always()
         run: |
-          docker stop myapp2  true
+          docker stop myapp2 || true
           docker rm myapp2 || true
