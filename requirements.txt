@@ -4,3 +4,5 @@ flask
 pytest
 bandit
 pip-audit
+flask_sqlalchemy
+cryptography
