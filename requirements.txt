@@ -1,8 +1,7 @@
-setuptools>=81.0.0
-wheel>=0.46.2
-flask
-pytest
-bandit
-pip-audit
-flask_sqlalchemy
+flask 
+pytest 
+bandit 
+pip-audit 
+pymysql 
+flask_sqlalchemy 
 cryptography
