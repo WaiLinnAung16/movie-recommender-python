@@ -106,7 +106,11 @@ def validate_movie_form(form):
  
 # -------------------- App Factory -------------------- 
 def create_app(): 
-    app = Flask(__name__) 
+    app = Flask(__name__)
+    import werkzeug.serving
+    werkzeug.serving.WSGIRequestHandler.server_version = "SecureServer"
+    werkzeug.serving.WSGIRequestHandler.sys_version = ""
+
     app.config["SQLALCHEMY_DATABASE_URI"] = DB_URI 
     app.config["SECRET_KEY"] = SECRET_KEY 
     app.config.update( 
@@ -125,15 +129,16 @@ def create_app():
 
         # CSP (Strong)
         response.headers['Content-Security-Policy'] = (
-            "default-src 'self'; "
-            "script-src 'self'; "
-            "style-src 'self'; "
-            "img-src 'self' data:; "
-            "font-src 'self'; "
-            "connect-src 'self'; "
-            "frame-ancestors 'self'; "
-            "object-src 'none'; "
-            "base-uri 'self';"
+        "default-src 'self'; "
+        "script-src 'self' 'unsafe-inline'; "
+        "style-src 'self' 'unsafe-inline'; "
+        "img-src 'self' data:; "
+        "font-src 'self'; "
+        "connect-src 'self'; "
+        "object-src 'none'; "
+        "base-uri 'self'; "
+        "frame-ancestors 'self'; "
+        "form-action 'self';"
         )
 
         # HTTPS
