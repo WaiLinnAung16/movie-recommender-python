@@ -2,7 +2,7 @@ import os
 import csv 
 import logging 
 from typing import List, Dict 
-from flask import Flask, request, render_template_string, redirect, session 
+from flask import Flask, request, render_template_string, redirect, session, after_this_request
 from flask_sqlalchemy import SQLAlchemy 
 from werkzeug.security import generate_password_hash, check_password_hash 
  
@@ -115,6 +115,16 @@ def create_app():
         SESSION_COOKIE_SAMESITE='Lax' 
     ) 
     db.init_app(app) 
+
+    @app.after_request
+    def add_security_headers(response):
+        response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        response.headers['X-XSS-Protection'] = '1; mode=block'
+        response.headers['Content-Security-Policy'] = "default-src 'self'"
+        response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+        response.headers['Permissions-Policy'] = 'geolocation=(), microphone=()'
+        return response
  
     movie_service = MovieService() 
     auth_service = AuthService() 

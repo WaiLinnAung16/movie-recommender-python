@@ -91,7 +91,8 @@ jobs:
             ghcr.io/zaproxy/zaproxy:stable \
             zap-baseline.py \
             -t http://localhost:5000 \ 
-            -r zap-report.html || echo "ZAP finished with alerts"
+            -r zap-report.html \
+            -I || echo "ZAP finished with alerts"
 
       - name: Upload ZAP Report
         uses: actions/upload-artifact@v4
