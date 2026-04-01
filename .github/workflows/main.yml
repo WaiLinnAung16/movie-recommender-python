@@ -52,9 +52,9 @@ jobs:
 
       - name: Build and Tag Image
         run: |
-          CLEAN_USER=$(echo "${{ secrets.DOCKER_USERNAME }}" | tr -d '\r\n ') 
-          FULL_TAG="$CLEAN_USER/${{ env.IMAGE_NAME }}:latest" 
-          docker build -t "$FULL_TAG" . 
+          CLEAN_USER=$(echo "${{ secrets.DOCKER_USERNAME }}" | tr -d '\r\n ')
+          FULL_TAG="$CLEAN_USER/${{ env.IMAGE_NAME }}:latest"
+          docker build -t "$FULL_TAG" .
           echo "FULL_IMAGE_TAG=$FULL_TAG" >> $GITHUB_ENV
 
       - name: Scan Docker Image (Trivy)
@@ -71,10 +71,10 @@ jobs:
       - name: Run Container for DAST
         run: |
           # We pass the DB_URI to the container so it can find the MySQL service 
-          docker run -d -p 5000:5000 \ 
-            --name myapp3 \ 
-            --network="host" \ 
-            -e DB_URI="${{ env.DB_URI }}" \ 
+          docker run -d -p 5000:5000 \
+            --name myapp3 \
+            --network="host" \
+            -e DB_URI="${{ env.DB_URI }}" \
             "${{ env.FULL_IMAGE_TAG }}" 
            
           echo "Waiting for ETL to finish (this takes a moment)..." 
@@ -86,10 +86,10 @@ jobs:
         run: |
           mkdir -p zap-reports 
           chmod 777 zap-reports 
-          docker run --network="host" \ 
-            -v $(pwd)/zap-reports:/zap/wrk:rw \ 
-            ghcr.io/zaproxy/zaproxy:stable \ 
-            zap-baseline.py \ 
+          docker run --network="host" \
+            -v $(pwd)/zap-reports:/zap/wrk:rw \
+            ghcr.io/zaproxy/zaproxy:stable \
+            zap-baseline.py \
             -t http://localhost:5000 \ 
             -r zap-report.html || echo "ZAP finished with alerts"
 
