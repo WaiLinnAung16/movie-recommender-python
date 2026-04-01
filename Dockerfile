@@ -10,8 +10,8 @@ WORKDIR /app
 # This uses Docker's layer caching so 'pip install' doesn't run  
 # every time you change a line of code—only when requirements.txt changes. 
 COPY requirements.txt . 
-# Install all Python dependencies from requirements.txt, and don’t keep any extra files to 
-save space. 
+
+# Install all Python dependencies from requirements.txt, and don’t keep any extra files to save space. 
 RUN pip install --no-cache-dir -r requirements.txt 
  
 # 3. Copy the rest of the application 
