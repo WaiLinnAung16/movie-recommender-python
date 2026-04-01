@@ -118,12 +118,43 @@ def create_app():
 
     @app.after_request
     def add_security_headers(response):
+        # Basic Security
         response.headers['X-Frame-Options'] = 'SAMEORIGIN'
         response.headers['X-Content-Type-Options'] = 'nosniff'
         response.headers['X-XSS-Protection'] = '1; mode=block'
-        response.headers['Content-Security-Policy'] = "default-src 'self'"
+
+        # CSP (Strong)
+        response.headers['Content-Security-Policy'] = (
+            "default-src 'self'; "
+            "script-src 'self'; "
+            "style-src 'self'; "
+            "img-src 'self' data:; "
+            "font-src 'self'; "
+            "connect-src 'self'; "
+            "frame-ancestors 'self'; "
+            "object-src 'none'; "
+            "base-uri 'self';"
+        )
+
+        # HTTPS
         response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+
+        # Permissions
         response.headers['Permissions-Policy'] = 'geolocation=(), microphone=()'
+
+        # Cache Protection
+        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+
+        # Hide Server Info
+        response.headers['Server'] = ''
+
+        # Cross-Origin Protection
+        response.headers['Cross-Origin-Embedder-Policy'] = 'require-corp'
+        response.headers['Cross-Origin-Opener-Policy'] = 'same-origin'
+        response.headers['Cross-Origin-Resource-Policy'] = 'same-origin'
+
         return response
  
     movie_service = MovieService() 
